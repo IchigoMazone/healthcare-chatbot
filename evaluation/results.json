@@ -1,0 +1,318 @@
+{
+  "summary": {
+    "total": 25,
+    "correct": 13,
+    "accuracy": 52.0,
+    "avg_similarity": 0.835,
+    "avg_response_time": 9.93
+  },
+  "details": [
+    {
+      "id": 1,
+      "category": "co_so",
+      "query": "Bệnh viện Đa khoa ở đâu?",
+      "answer": "Xin lỗi, tôi không có thông tin về vấn đề này. Vui lòng liên hệ hotline để được hỗ trợ.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.93,
+      "response_time": 14.74,
+      "chunks_used": 5
+    },
+    {
+      "id": 2,
+      "category": "co_so",
+      "query": "Hotline của Trung tâm Chẩn đoán là bao nhiêu?",
+      "answer": "Xin lỗi, thông tin về hotline của Trung tâm Chẩn đoán không được cung cấp trong dữ liệu mà tôi có.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.788,
+      "response_time": 9.24,
+      "chunks_used": 5
+    },
+    {
+      "id": 3,
+      "category": "co_so",
+      "query": "Bệnh viện mở cửa lúc mấy giờ?",
+      "answer": "Xin lỗi, thông tin về thời gian mở cửa của bệnh viện không được cung cấp trong context. Vui lòng liên hệ hotline để được hỗ trợ.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.82,
+      "response_time": 9.55,
+      "chunks_used": 5
+    },
+    {
+      "id": 4,
+      "category": "co_so",
+      "query": "Có bao nhiêu cơ sở y tế?",
+      "answer": "Xin lỗi, tôi không có thông tin về vấn đề này. Vui lòng liên hệ hotline để được hỗ trợ.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.77,
+      "response_time": 9.23,
+      "chunks_used": 5
+    },
+    {
+      "id": 5,
+      "category": "khoa",
+      "query": "Khoa Nhi ở tầng mấy phòng nào?",
+      "answer": "Xin lỗi, tôi không có thông tin về vấn đề này. Vui lòng liên hệ hotline để được hỗ trợ.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.82,
+      "response_time": 8.64,
+      "chunks_used": 5
+    },
+    {
+      "id": 6,
+      "category": "khoa",
+      "query": "Khoa Mắt thuộc cơ sở nào?",
+      "answer": "Xin lỗi, thông tin về khoa Mắt không được cung cấp trong context của bạn.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.814,
+      "response_time": 7.09,
+      "chunks_used": 5
+    },
+    {
+      "id": 7,
+      "category": "khoa",
+      "query": "Khoa Hồi sức cấp cứu ở đâu?",
+      "answer": "Khoa Hồi sức cấp cứu nằm ở các bác sĩ: Vũ Thanh Tùng, Nguyễn Minh Anang, Hoàng Văn Phúc và Nguyễn Văn Hòa.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.82,
+      "response_time": 8.2,
+      "chunks_used": 5
+    },
+    {
+      "id": 8,
+      "category": "bac_si",
+      "query": "Bác sĩ nào chuyên về tim mạch?",
+      "answer": "Bác sĩ Phạm Văn Đô chuyên sâu trong lĩnh vực cấp cứu tim mạch.",
+      "correct": true,
+      "matched_kw": [
+        "tim mạch"
+      ],
+      "similarity": 0.927,
+      "response_time": 8.63,
+      "chunks_used": 5
+    },
+    {
+      "id": 9,
+      "category": "bac_si",
+      "query": "Khoa Răng Hàm Mặt có bác sĩ nào chuyên chỉnh nha?",
+      "answer": "Bác sĩ Trần Quốc Tuấn trong khoa Răng Hàm Mặt chuyên sâu về chỉnh nha.",
+      "correct": true,
+      "matched_kw": [
+        "Trần Quốc Tuấn",
+        "chỉnh nha"
+      ],
+      "similarity": 0.918,
+      "response_time": 8.88,
+      "chunks_used": 5
+    },
+    {
+      "id": 10,
+      "category": "bac_si",
+      "query": "Ai là bác sĩ chuyên MRI?",
+      "answer": "Xin lỗi, thông tin về bác sĩ chuyên MRI không được tìm thấy trong dữ liệu bạn đã cung cấp.",
+      "correct": true,
+      "matched_kw": [
+        "MRI"
+      ],
+      "similarity": 0.814,
+      "response_time": 8.55,
+      "chunks_used": 5
+    },
+    {
+      "id": 11,
+      "category": "dich_vu",
+      "query": "Khám nội tổng quát giá bao nhiêu?",
+      "answer": "Xin lỗi, thông tin về giá khám nội tổng quát không được cung cấp trong dữ liệu đã cho.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.786,
+      "response_time": 9.19,
+      "chunks_used": 5
+    },
+    {
+      "id": 12,
+      "category": "dich_vu",
+      "query": "Chụp CT Scanner cần chuẩn bị gì?",
+      "answer": "Xin lỗi, thông tin trong context không liên quan đến việc chuẩn bị cho chụp CT Scanner. Thông tin được cung cấp là về một nhóm bác sĩ với các chuyên ngành khác nhau trong y tế. Tôi không có thông tin cụ thể về việc chuẩn bị trước khi chụp CT Scanner.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.82,
+      "response_time": 11.66,
+      "chunks_used": 5
+    },
+    {
+      "id": 13,
+      "category": "dich_vu",
+      "query": "Chụp MRI giá bao nhiêu?",
+      "answer": "Xin lỗi, thông tin về giá cụ thể của dịch vụ chụp MRI không được cung cấp trong nội dung đã cho. Vui lòng liên hệ hotline để được hỗ trợ.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.781,
+      "response_time": 10.32,
+      "chunks_used": 5
+    },
+    {
+      "id": 14,
+      "category": "dich_vu",
+      "query": "Xét nghiệm máu cần nhịn ăn không?",
+      "answer": "Xét nghiệm máu thường không yêu cầu nhịn ăn trước khi thực hiện. Thông tin cung cấp về các bác sĩ và chuyên ngành của họ không liên quan trực tiếp đến việc này. Nếu có nghi vấn cụ thể về xét nghiệm nào đó, khách hàng nên liên hệ trực tiếp bộ phận y tế thông qua hotline để được hỗ trợ.",
+      "correct": true,
+      "matched_kw": [
+        "nhịn ăn"
+      ],
+      "similarity": 0.82,
+      "response_time": 12.41,
+      "chunks_used": 5
+    },
+    {
+      "id": 15,
+      "category": "goi_kham",
+      "query": "Gói khám sức khỏe cơ bản giá bao nhiêu?",
+      "answer": "Xin lỗi, tôi không có thông tin về vấn đề này. Vui lòng liên hệ hotline để được hỗ trợ.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.788,
+      "response_time": 9.4,
+      "chunks_used": 5
+    },
+    {
+      "id": 16,
+      "category": "goi_kham",
+      "query": "Gói khám phụ nữ bao gồm những gì?",
+      "answer": "Xin lỗi, tôi không có thông tin cụ thể về gói khám phụ nữ. Bạn có thể liên hệ bộ phận y tế phụ khoa của bệnh viện để được hỗ trợ chi tiết hơn.",
+      "correct": true,
+      "matched_kw": [
+        "phụ khoa"
+      ],
+      "similarity": 0.788,
+      "response_time": 10.4,
+      "chunks_used": 5
+    },
+    {
+      "id": 17,
+      "category": "bang_gia",
+      "query": "Khám tim mạch có BHYT giá bao nhiêu?",
+      "answer": "Khám tim mạch có BHYT giá 50,000 VNĐ. Ghi chú: BHYT thanh toán 80%.",
+      "correct": true,
+      "matched_kw": [
+        "50,000",
+        "80%"
+      ],
+      "similarity": 0.855,
+      "response_time": 9.85,
+      "chunks_used": 5
+    },
+    {
+      "id": 18,
+      "category": "bang_gia",
+      "query": "Chụp MRI có BHYT thanh toán không?",
+      "answer": "BHYT có thể thanh toán một phần chi phí cho dịch vụ MRI, nhưng còn phần chênh lệch cần thanh toán thêm.",
+      "correct": true,
+      "matched_kw": [
+        "BHYT",
+        "một phần"
+      ],
+      "similarity": 0.932,
+      "response_time": 9.7,
+      "chunks_used": 5
+    },
+    {
+      "id": 19,
+      "category": "faq",
+      "query": "Làm thế nào để đặt lịch khám?",
+      "answer": "Xin lỗi, thông tin về cách đặt lịch khám không được cung cấp trong dữ liệu được cung cấp. Vui lòng liên hệ hotline của hệ thống y tế để được hỗ trợ.",
+      "correct": true,
+      "matched_kw": [
+        "hotline"
+      ],
+      "similarity": 0.82,
+      "response_time": 9.89,
+      "chunks_used": 5
+    },
+    {
+      "id": 20,
+      "category": "faq",
+      "query": "Có thanh toán bằng MoMo không?",
+      "answer": "Có, bệnh viện chấp nhận thanh toán bằng ví điện tử MoMo cùng với các phương thức khác như tiền mặt, chuyển khoản ngân hàng, thẻ ATM/tín dụng.",
+      "correct": true,
+      "matched_kw": [
+        "MoMo"
+      ],
+      "similarity": 0.928,
+      "response_time": 10.21,
+      "chunks_used": 5
+    },
+    {
+      "id": 21,
+      "category": "faq",
+      "query": "Cần mang gì khi khám bằng BHYT?",
+      "answer": "Cần mang thẻ BHYT còn hiệu lực, CCCD hoặc hộ chiếu. Nếu khám trái tuyến cần có giấy chuyển viện.",
+      "correct": true,
+      "matched_kw": [
+        "thẻ BHYT",
+        "CCCD",
+        "hộ chiếu"
+      ],
+      "similarity": 0.952,
+      "response_time": 9.39,
+      "chunks_used": 5
+    },
+    {
+      "id": 22,
+      "category": "faq",
+      "query": "Kết quả xét nghiệm bao lâu có?",
+      "answer": "Kết quả xét nghiệm có thể mất từ 1-2 giờ đến 24-48 giờ, tùy theo loại xét nghiệm. Bạn sẽ nhận kết quả qua số điện thoại đăng ký.",
+      "correct": true,
+      "matched_kw": [
+        "1-2 giờ",
+        "2 giờ"
+      ],
+      "similarity": 0.786,
+      "response_time": 10.85,
+      "chunks_used": 5
+    },
+    {
+      "id": 23,
+      "category": "trieu_chung",
+      "query": "Tôi bị đau ngực dữ dội nên làm gì?",
+      "answer": "Nếu bạn bị đau ngực dữ dội, mức độ cap_cuu, tôi建议您立即前往医院急诊，因为这可能是紧急情况。建议您休息，如果疼痛持续，请立即呼叫急救。热线电话是115。",
+      "correct": true,
+      "matched_kw": [
+        "115"
+      ],
+      "similarity": 0.782,
+      "response_time": 11.11,
+      "chunks_used": 5
+    },
+    {
+      "id": 24,
+      "category": "trieu_chung",
+      "query": "Trẻ sốt cao trên 39 độ nên đến khoa nào?",
+      "answer": "Trẻ sốt cao trên 39 độ nên đến khoa Cấp cứu.",
+      "correct": true,
+      "matched_kw": [
+        "cấp cứu"
+      ],
+      "similarity": 0.784,
+      "response_time": 8.36,
+      "chunks_used": 5
+    },
+    {
+      "id": 25,
+      "category": "trieu_chung",
+      "query": "Bị mất ngủ kéo dài nên khám ở đâu?",
+      "answer": "Bác sĩ chuyên sâu về hồi sức tích cực Nguyễn Minh Anh và bác sĩ chuyên sâu về hồi sức hô hấp Vũ Thanh Tùng đều làm việc trong Khoa Hồi sức cấp cứu. Vì vậy, bạn có thể lựa chọn khám ở Khoa Hồi sức cấp cứu để được tư vấn và hỗ trợ về vấn đề mất ngủ kéo dài.",
+      "correct": false,
+      "matched_kw": [],
+      "similarity": 0.829,
+      "response_time": 12.65,
+      "chunks_used": 5
+    }
+  ]
+}
