@@ -14,7 +14,7 @@ export default function page() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleForgot = () => {
-    router.push("/forgotpassword");
+    router.push("/forgot-password");
   };
 
   const handleRegister = () => {
@@ -33,7 +33,7 @@ export default function page() {
         </div>
         <div className="px-12 py-8 flex flex-col justify-center">
           <h2 className="text-white flex justify-center mb-2 font-semibold text-[25px]">
-            Đăng nhập vào ChatIZN
+            Đăng nhập
           </h2>
           <p className="flex justify-center mb-[30px] text-white/85 text-[14px]">
             Đăng nhập tài khoản của bạn
