@@ -15,6 +15,7 @@ import {
   Pencil,
   Trash2,
   Sparkles,
+  Camera,
 } from "lucide-react";
 
 export default function page() {
@@ -133,7 +134,7 @@ export default function page() {
         </div>
       )}
 
-      {profile && (
+      {true && (
         <div
           className="fixed inset-0 bg-black/50 flex justify-center items-center z-[100]"
           onClick={() => {
@@ -146,8 +147,38 @@ export default function page() {
               e.stopPropagation();
             }}
           >
-            <div className=""></div>
-            <div className=""></div>
+            <p className="text-[18px] mb-2">Chỉnh sửa hồ sơ</p>
+            <div className="h-47 flex justify-center items-center">
+              <div className="w-32 h-32 rounded-[50%] outline-2 outline-offset-3 outline-blue-500 relative">
+                <img
+                  src="/assets/avatar.webp"
+                  alt="avatar"
+                  className="rounded-[50%]"
+                />
+                <span className="w-8 h-8 bg-white border border-[#d7d7d2] flex justify-center items-center rounded-[50%] absolute bottom-0 right-0 cursor-pointer">
+                  <Camera
+                    strokeWidth="1.6"
+                    className="w-[18px] h-[18px] flex justify-center items-center"
+                  />
+                </span>
+              </div>
+            </div>
+            <div className="p-2 rounded-[10px] border border-[#d7d7d2] focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-blue-500 mb-4">
+              <p className="text-[14px] ">Tên hiển thị</p>
+              <input
+                type="text"
+                value="Trịnh Như Nhất"
+                className="w-[100%] text-[16px]"
+              />
+            </div>
+            <div className="p-2 rounded-[10px] border border-[#d7d7d2] focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-blue-500">
+              <p className="text-[14px] ">Tên hiển thị</p>
+              <input
+                type="text"
+                value="Trịnh Như Nhất"
+                className="w-[100%] text-[16px]"
+              />
+            </div>
             <div className=""></div>
           </div>
         </div>
@@ -269,7 +300,6 @@ export default function page() {
           >
             {!small && (
               <div className="text-[14px] select-none">
-                Ẩn hiện đã gắn sao
                 {chatPin.length > 0 && (
                   <div
                     className="mt-[8px] mx-2 hover:bg-gray-200 rounded-[10px] flex items-center gap-2 cursor-pointer"
@@ -278,7 +308,6 @@ export default function page() {
                     <div className="h-[42px] flex items-center pl-[12px] select-none">
                       Được gắn sao
                     </div>
-                    Ẩn hiện Đã gắn sao
                     {!showPin ? (
                       <ChevronRight
                         className="w-[18px] h-[18px] flex items-center"
@@ -580,7 +609,9 @@ export default function page() {
               </div>
             </div>
           </div>
-          <div className=""></div>
+          <div className="flex justify-center items-center">
+            Nguyễn Diệu Lyng
+          </div>
         </div>
       </div>
     </div>

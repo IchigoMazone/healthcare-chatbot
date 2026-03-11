@@ -11,7 +11,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,9 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ============================================================
-# MODELS
-# ============================================================
 class ChatRequest(BaseModel):
     query: str
     k: int = 5
@@ -31,10 +27,6 @@ class ChatResponse(BaseModel):
     answer: str
     chunks_used: int
     response_time: float
-
-# ============================================================
-# ENDPOINTS
-# ============================================================
 
 @app.get("/")
 def root():

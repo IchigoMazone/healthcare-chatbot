@@ -2,55 +2,40 @@ import psycopg2
 import psycopg2.extras
 import requests
 import json
-from dotenv import load_dotenv
-import os
+from config import Config
 
-load_dotenv()
-
-# ============================================================
-# CONFIG
-# ============================================================
-DB_CONFIG = {
-    "host":     os.getenv("DB_HOST", "localhost"),
-    "port":     os.getenv("DB_PORT", "5432"),
-    "database": os.getenv("DB_NAME", "cskh_yte"),
-    "user":     os.getenv("DB_USER", "ichigomazone"),
-    "password": os.getenv("DB_PASSWORD", "postgresql123"),
-}
-OLLAMA_HOST  = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-EMBED_MODEL  = os.getenv("EMBED_MODEL", "nomic-embed-text")
-
-# ============================================================
-# KẾT NỐI DB
-# ============================================================
 def get_conn():
-    return psycopg2.connect(**DB_CONFIG)
+    return psycopg2.connect(**Config.DB_CONFIG)
 
-# ============================================================
-# EMBED TEXT BẰNG OLLAMA
-# ============================================================
 def embed(text: str) -> list[float]:
     res = requests.post(
-        f"{OLLAMA_HOST}/api/embeddings",
-        json={"model": EMBED_MODEL, "prompt": text}
+        f"{Config.OLLAMA_HOST}/api/embeddings",
+        json={"model": Config.EMBED_MODEL, "prompt": text},
+        timeout=30
     )
-    return res.json()["embedding"]
 
-# ============================================================
-# INSERT VÀO RAG_DOCUMENTS
-# ============================================================
+    res.raise_for_status()
+    data = res.json()
+
+    if "embedding" not in data:
+        raise ValueError("Embedding not found in response")
+
+    return data["embedding"]
+
 def insert_doc(cur, source_table, source_id, content, metadata):
     vector = embed(content)
+
+    if not vector:
+        print(f"Skip {source_table}:{source_id}")
+        return
+
     cur.execute("""
         INSERT INTO rag_documents (source_table, source_id, content, embedding, metadata)
         VALUES (%s, %s, %s, %s::vector, %s)
     """, (source_table, source_id, content, str(vector), json.dumps(metadata)))
 
-# ============================================================
-# INGEST TỪNG BẢNG
-# ============================================================
 def ingest_co_so_y_te(cur, conn):
-    print("📥 Ingesting co_so_y_te...")
+    print("Ingesting co_so_y_te...")
     cur.execute("SELECT * FROM co_so_y_te")
     rows = cur.fetchall()
     for r in rows:
@@ -62,10 +47,10 @@ def ingest_co_so_y_te(cur, conn):
         )
         insert_doc(cur, "co_so_y_te", r["id"], content, {"ten": r["ten"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_khoa(cur, conn):
-    print("📥 Ingesting khoa...")
+    print("Ingesting khoa...")
     cur.execute("""
         SELECT k.*, c.ten as ten_co_so 
         FROM khoa k JOIN co_so_y_te c ON k.co_so_id = c.id
@@ -80,10 +65,10 @@ def ingest_khoa(cur, conn):
         )
         insert_doc(cur, "khoa", r["id"], content, {"ten_khoa": r["ten_khoa"], "co_so": r["ten_co_so"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_bac_si(cur, conn):
-    print("📥 Ingesting bac_si...")
+    print("Ingesting bac_si...")
     cur.execute("""
         SELECT b.*, k.ten_khoa 
         FROM bac_si b JOIN khoa k ON b.khoa_id = k.id
@@ -98,10 +83,10 @@ def ingest_bac_si(cur, conn):
         )
         insert_doc(cur, "bac_si", r["id"], content, {"ho_ten": r["ho_ten"], "khoa": r["ten_khoa"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_dich_vu(cur, conn):
-    print("📥 Ingesting dich_vu...")
+    print("Ingesting dich_vu...")
     cur.execute("""
         SELECT d.*, k.ten_khoa 
         FROM dich_vu d JOIN khoa k ON d.khoa_id = k.id
@@ -117,10 +102,10 @@ def ingest_dich_vu(cur, conn):
         )
         insert_doc(cur, "dich_vu", r["id"], content, {"ten_dich_vu": r["ten_dich_vu"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_goi_kham(cur, conn):
-    print("📥 Ingesting goi_kham...")
+    print("Ingesting goi_kham...")
     cur.execute("""
         SELECT g.*, STRING_AGG(d.ten_dich_vu, ', ') as danh_sach_dich_vu
         FROM goi_kham g
@@ -138,10 +123,10 @@ def ingest_goi_kham(cur, conn):
         )
         insert_doc(cur, "goi_kham", r["id"], content, {"ten_goi": r["ten_goi"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_trieu_chung(cur, conn):
-    print("📥 Ingesting trieu_chung...")
+    print("Ingesting trieu_chung...")
     cur.execute("""
         SELECT t.*, k.ten_khoa 
         FROM trieu_chung t JOIN khoa k ON t.khoa_id = k.id
@@ -157,20 +142,20 @@ def ingest_trieu_chung(cur, conn):
         )
         insert_doc(cur, "trieu_chung", r["id"], content, {"trieu_chung": r["ten_trieu_chung"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_faq(cur, conn):
-    print("📥 Ingesting faq...")
+    print("Ingesting faq...")
     cur.execute("SELECT * FROM faq")
     rows = cur.fetchall()
     for r in rows:
         content = f"Câu hỏi: {r['question']} Trả lời: {r['answer']}"
         insert_doc(cur, "faq", r["id"], content, {"category": r["category"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_bang_gia(cur, conn):
-    print("📥 Ingesting bang_gia...")
+    print("Ingesting bang_gia...")
     cur.execute("SELECT * FROM bang_gia")
     rows = cur.fetchall()
     for r in rows:
@@ -183,10 +168,10 @@ def ingest_bang_gia(cur, conn):
         )
         insert_doc(cur, "bang_gia", r["id"], content, {"ten_dich_vu": r["ten_dich_vu"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
 def ingest_trieu_chung_khoa(cur, conn):
-    print("📥 Ingesting trieu_chung_khoa...")
+    print("Ingesting trieu_chung_khoa...")
     cur.execute("SELECT * FROM trieu_chung_khoa")
     rows = cur.fetchall()
     for r in rows:
@@ -200,20 +185,15 @@ def ingest_trieu_chung_khoa(cur, conn):
         )
         insert_doc(cur, "trieu_chung_khoa", r["id"], content, {"muc_do": r["muc_do"]})
     conn.commit()
-    print(f"   ✅ {len(rows)} records")
+    print(f"{len(rows)} records")
 
-# ============================================================
-# MAIN - CHẠY TẤT CẢ
-# ============================================================
 def ingest_all():
-    print("🚀 Bắt đầu ingest data...\n")
+    print("Bắt đầu ingest data...\n")
     conn = get_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    # Xóa data cũ nếu có
     cur.execute("DELETE FROM rag_documents")
     conn.commit()
-    print("🗑️  Đã xóa data cũ\n")
+    print("Đã xóa data cũ\n")
 
     try:
         ingest_co_so_y_te(cur, conn)
@@ -226,13 +206,12 @@ def ingest_all():
         ingest_bang_gia(cur, conn)
         ingest_trieu_chung_khoa(cur, conn)
 
-        # Tổng kết
         cur.execute("SELECT COUNT(*) as total FROM rag_documents")
         total = cur.fetchone()["total"]
-        print(f"\n✅ Ingest hoàn tất! Tổng: {total} documents trong rag_documents")
+        print(f"\nIngest hoàn tất! Tổng: {total} documents trong rag_documents")
 
     except Exception as e:
-        print(f"❌ Lỗi: {e}")
+        print(f"Lỗi: {e}")
         conn.rollback()
     finally:
         cur.close()
