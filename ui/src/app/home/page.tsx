@@ -167,7 +167,6 @@ export default function page() {
             border-r border-[#d7d7d2] bg-[#faf9f5]
           `}
         >
-          // Logo thương hiệu
           {small ? (
             <div className="flex justify-center items-center py-[6px]">
               <div
@@ -213,7 +212,7 @@ export default function page() {
               </div>
             </div>
           )}
-          // Đoạn chat mới
+
           {small ? (
             <div className="flex justify-center items-center pt-[6px]">
               <div className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer">
@@ -230,7 +229,7 @@ export default function page() {
               </div>
             </div>
           )}
-          // Tìm kiếm đoạn chat
+
           {small ? (
             <div className="flex justify-center items-center pt-[6px]">
               <div className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer">
@@ -247,7 +246,7 @@ export default function page() {
               </div>
             </div>
           )}
-          // Ảnh
+
           {small ? (
             <div className="flex justify-center items-center pt-[6px]">
               <div className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer">
@@ -264,7 +263,7 @@ export default function page() {
               </div>
             </div>
           )}
-          // Danh sách trò chuyện
+
           <div
             className={`${!small ? "mt-[6px] border-y border-[#d7d7d2] overflow-y-auto min-h-0 flex-1 scrollbar-hide" : ""}`}
           >
@@ -293,7 +292,6 @@ export default function page() {
                     )}
                   </div>
                 )}
-                // Danh sách đã gắn sao
                 {showPin && (
                   <ul className="flex flex-col">
                     {chatPin.map((chat, index) => (
@@ -394,7 +392,6 @@ export default function page() {
                     ))}
                   </ul>
                 )}
-                //Gần đây
                 <div
                   className="mt-[8px] mx-2 hover:bg-gray-200 rounded-[10px] flex items-center gap-2 cursor-pointer"
                   onClick={() => setShowHistory(!showHistory)}
@@ -414,7 +411,6 @@ export default function page() {
                     />
                   )}
                 </div>
-                // Danh sách gần đây
                 {showHistory && (
                   <ul className="flex flex-col">
                     {chats.map((chat, index) => (
@@ -520,12 +516,11 @@ export default function page() {
                     ))}
                   </ul>
                 )}
-                // Khoảng trắng ở đệm của scrollbar
                 <div className="mb-2"></div>
               </div>
             )}
           </div>
-          // Profile
+
           {small ? (
             <div className="flex justify-center items-center py-[6px]">
               <div
@@ -561,7 +556,7 @@ export default function page() {
             </div>
           )}
         </div>
-        //Header Content
+
         <div className="bg-transparent grid grid-rows-[54px_1fr] min-w-0">
           <div className="border-b border-[#d7d7d2] grid grid-cols-[58px_1fr_58px] md:grid-cols-[1fr_58px] py-[6px] min-w-0">
             <div className="ml-4 md:hidden flex justify-center items-center">
