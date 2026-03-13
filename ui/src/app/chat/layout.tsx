@@ -2,6 +2,9 @@
 
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/src/store/auth.store";
+import { useUserStore } from "@/src/store/user.store";
 import {
   SquarePen,
   PanelLeft,
@@ -16,9 +19,22 @@ import {
   Trash2,
   Sparkles,
   Camera,
+  Settings,
+  LogOut,
+  Info,
 } from "lucide-react";
+import MobileOverlay from "./mobileoverlay";
+import RenameModal from "./rename";
+import DeleteModal from "./delete";
+import ProfileModal from "./profile";
+import LogoutModal from "./logout";
 
-export default function page() {
+export default function HomeLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
   const [hoverLogo, setHoverLogo] = useState<boolean>(false);
   const [small, setSmall] = useState<boolean>(true);
   const [showHistory, setShowHistory] = useState<boolean>(true);
@@ -39,162 +55,114 @@ export default function page() {
     { id: 8, title: "Tối ưu performance React" },
     { id: 9, title: "Tạo dropdown menu" },
     { id: 10, title: "Làm dark mode" },
+    { id: 11, title: "Làm dark mode" },
+    { id: 12, title: "Làm dark mode" },
+    { id: 13, title: "Làm dark mode" },
   ]);
+
+  const [profileX, setProfileX] = useState({
+    avatar: "/assets/avatar.webp",
+    displayName: "Trịnh Như Nhất",
+    username: "nhattrinh@2702",
+  });
+
+  const userId = useAuthStore((state) => state.userId);
+  const setUser = useUserStore((state) => state.setUser);
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if (!userId || user) return;
+
+    const fetchData = async () => {
+      try {
+        const [userRes, refreshRes] = await Promise.all([
+          fetch(`/api/auth/user/${userId}`, {
+            credentials: "include",
+          }),
+          fetch(`/api/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+          }),
+        ]);
+
+        const userData = await userRes.json();
+        const refreshData = await refreshRes.json();
+
+        if (userData.success) {
+          setUser(userData.data);
+        }
+
+        if (refreshData.success) {
+          setAuth(refreshData.data.userId, refreshData.data.accessToken);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, [userId]);
 
   const [chatPin, setChatPin] = useState<{ id: number; title: string }[]>([]);
   const [rename, setRename] = useState<boolean>(false);
   const [splice, setSplice] = useState<boolean>(false);
   const [openMobile, setOpenMobile] = useState<boolean>(false);
   const [profile, setProfile] = useState<boolean>(false);
+  const [logout, setLogout] = useState<boolean>(false);
+  const [setting, setSetting] = useState<boolean>(false);
 
   return (
     <div className="w-screen h-screen bg-[#faf9f5] overflow-hidden">
-      {openMobile && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
-          onClick={() => setOpenMobile(false)}
+      {openMobile && <MobileOverlay onClick={() => setOpenMobile(false)} />}
+
+      {rename && (
+        <RenameModal
+          open={rename}
+          value={"Trinh Nhu Nhat"}
+          onChange={setRename}
+          onClose={() => setRename(false)}
+          onSave={() => setRename(false)}
         />
       )}
 
-      {rename && (
-        <div
-          className="fixed inset-0 bg-black/50 flex justify-center items-center z-[100]"
-          onClick={() => {
-            setRename(false);
-          }}
-        >
-          <div
-            className="bg-[#faf9f5] rounded-[15px] p-5 w-90 shadow-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <p className="text-[18px] mb-5">Đổi tên đoạn chat</p>
-            <input
-              type="text"
-              value="IchigoMazone"
-              className="border border-[#bbbbbb] w-[100%] px-[12px] py-[6px] rounded-[5px] outline-2 outline-offset-2 outline-blue-500 mb-6"
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                className="w-16 h-8 bg-transparent border border-[#bbbbbb] rounded-[8px] hover:bg-[#dad2d2] flex justify-center items-center cursor-pointer"
-                onClick={() => {
-                  setRename(false);
-                }}
-              >
-                Hủy
-              </button>
-              <button
-                className="w-16 h-8 bg-black text-white border border-[#bbbbbb] rounded-[8px] flex justify-center items-center hover:bg-black/70 cursor-pointer"
-                onClick={() => {
-                  setRename(false);
-                }}
-              >
-                Lưu
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {splice && (
-        <div
-          className="fixed inset-0 bg-black/50 flex justify-center items-center z-[100]"
-          onClick={() => {
-            setSplice(false);
-          }}
-        >
-          <div
-            className="bg-[#faf9f5] rounded-[15px] p-5 w-90 shadow-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <p className="text-[18px] mb-1">Xóa đoạn chat</p>
-            <p className="mb-5">Bạn có muốn xóa đoạn chat này không?</p>
-            <div className="flex justify-end gap-2">
-              <button
-                className="w-16 h-8 bg-transparent border border-[#bbbbbb] rounded-[8px] hover:bg-[#dad2d2] flex justify-center items-center cursor-pointer"
-                onClick={() => {
-                  setSplice(false);
-                }}
-              >
-                Hủy
-              </button>
-              <button
-                className="w-16 h-8 bg-black text-white border border-[#bbbbbb] rounded-[8px] flex justify-center items-center hover:bg-black/70 cursor-pointer"
-                onClick={() => {
-                  setSplice(false);
-                }}
-              >
-                Xóa
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          open={splice}
+          onClose={() => setSplice(false)}
+          onConfirm={() => setSplice(false)}
+        />
       )}
 
-      {true && (
-        <div
-          className="fixed inset-0 bg-black/50 flex justify-center items-center z-[100]"
-          onClick={() => {
-            setProfile(false);
-          }}
-        >
-          <div
-            className="bg-[#faf9f5] rounded-[15px] p-5 w-90 shadow-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <p className="text-[18px] mb-2">Chỉnh sửa hồ sơ</p>
-            <div className="h-47 flex justify-center items-center">
-              <div className="w-32 h-32 rounded-[50%] outline-2 outline-offset-3 outline-blue-500 relative">
-                <img
-                  src="/assets/avatar.webp"
-                  alt="avatar"
-                  className="rounded-[50%]"
-                />
-                <span className="w-8 h-8 bg-white border border-[#d7d7d2] flex justify-center items-center rounded-[50%] absolute bottom-0 right-0 cursor-pointer">
-                  <Camera
-                    strokeWidth="1.6"
-                    className="w-[18px] h-[18px] flex justify-center items-center"
-                  />
-                </span>
-              </div>
-            </div>
-            <div className="p-2 rounded-[10px] border border-[#d7d7d2] focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-blue-500 mb-4">
-              <p className="text-[14px] ">Tên hiển thị</p>
-              <input
-                type="text"
-                value="Trịnh Như Nhất"
-                className="w-[100%] text-[16px]"
-              />
-            </div>
-            <div className="p-2 rounded-[10px] border border-[#d7d7d2] focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-blue-500">
-              <p className="text-[14px] ">Tên hiển thị</p>
-              <input
-                type="text"
-                value="Trịnh Như Nhất"
-                className="w-[100%] text-[16px]"
-              />
-            </div>
-            <div className=""></div>
-          </div>
-        </div>
+      {profile && (
+        <ProfileModal
+          open={profile}
+          profile={profileX}
+          onChange={setProfileX}
+          onClose={() => setProfile(false)}
+          onSave={() => setProfile(false)}
+        />
+      )}
+
+      {logout && (
+        <LogoutModal
+          open={logout}
+          email="ichigomazone@gmail.com"
+          onClose={() => setLogout(false)}
+        />
       )}
 
       <div
-        className={`h-screen grid grid-cols-1 ${small ? "md:grid-cols-[59px_1fr]" : "md:grid-cols-[260px_1fr]"}`}
+        className={`h-screen grid grid-cols-1 ${small ? "lg:grid-cols-[59px_1fr]" : "lg:grid-cols-[260px_1fr]"}`}
       >
         <div
           className={`
-            fixed md:static top-0 left-0 z-50 h-screen
+            fixed lg:static top-0 left-0 z-50 h-screen
             ${openMobile ? "translate-x-0" : "-translate-x-full"}
-            md:translate-x-0
+            lg:translate-x-0
             transition-transform duration-300
-            w-[260px] md:w-auto
-            flex flex-col md:grid md:grid-rows-[52px_46px_46px_46px_1fr_52px]
+            w-[260px] lg:w-auto
+            flex flex-col lg:grid lg:grid-rows-[52px_46px_46px_46px_1fr_52px]
             border-r border-[#d7d7d2] bg-[#faf9f5]
           `}
         >
@@ -204,7 +172,10 @@ export default function page() {
                 className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer"
                 onMouseEnter={() => setHoverLogo(true)}
                 onMouseLeave={() => setHoverLogo(false)}
-                onClick={() => setSmall(false)}
+                onClick={() => {
+                  setSmall(false);
+                  setSetting(false);
+                }}
               >
                 {!hoverLogo ? (
                   <img
@@ -235,7 +206,11 @@ export default function page() {
                     if (!openMobile) {
                       setSmall(!small);
                       setHoverLogo(false);
-                    } else setOpenMobile(false);
+                      setSetting(false);
+                    } else {
+                      setOpenMobile(false);
+                      setSetting(false);
+                    }
                   }}
                 >
                   <PanelLeft className="w-[18px] h-[18px]" strokeWidth="1.6" />
@@ -246,12 +221,23 @@ export default function page() {
 
           {small ? (
             <div className="flex justify-center items-center pt-[6px]">
-              <div className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer">
+              <div
+                className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer"
+                onClick={() => {
+                  router.push("/chat/new");
+                }}
+              >
                 <SquarePen className="w-[18px] h-[18px]" strokeWidth="1.6" />
               </div>
             </div>
           ) : (
-            <div className="h-10 mt-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer">
+            <div
+              className="h-10 mt-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer"
+              onClick={() => {
+                setOpenMobile(false);
+                router.push("/chat/new");
+              }}
+            >
               <div className="w-[42px] flex justify-center items-center">
                 <SquarePen className="w-[18px] h-[18px]" strokeWidth="1.6" />
               </div>
@@ -263,12 +249,23 @@ export default function page() {
 
           {small ? (
             <div className="flex justify-center items-center pt-[6px]">
-              <div className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer">
+              <div
+                className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer"
+                onClick={() => {
+                  router.push("/chat/recents");
+                }}
+              >
                 <Search className="w-[18px] h-[18px]" strokeWidth="1.6" />
               </div>
             </div>
           ) : (
-            <div className="h-10 mt-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer">
+            <div
+              className="h-10 mt-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer"
+              onClick={() => {
+                setOpenMobile(false);
+                router.push("/chat/recents");
+              }}
+            >
               <div className="w-[42px] flex justify-center items-center">
                 <Search className="w-[18px] h-[18px]" strokeWidth="1.6" />
               </div>
@@ -280,12 +277,22 @@ export default function page() {
 
           {small ? (
             <div className="flex justify-center items-center pt-[6px]">
-              <div className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer">
+              <div
+                className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer"
+                onClick={() => {
+                  router.push("/chat/images");
+                }}
+              >
                 <ImagePlus className="w-[18px] h-[18px]" strokeWidth="1.6" />
               </div>
             </div>
           ) : (
-            <div className="h-10 mt-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer">
+            <div
+              className="h-10 mt-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer"
+              onClick={() => {
+                router.push("/chat/images");
+              }}
+            >
               <div className="w-[42px] flex justify-center items-center">
                 <ImagePlus className="w-[18px] h-[18px]" strokeWidth="1.6" />
               </div>
@@ -321,12 +328,17 @@ export default function page() {
                     )}
                   </div>
                 )}
+
                 {showPin && (
                   <ul className="flex flex-col">
                     {chatPin.map((chat, index) => (
                       <button
                         key={chat.id}
                         className="h-[42px] mx-[8px] mt-[8px] text-left pl-[12px] hover:bg-gray-200 rounded-[10px] flex justify-between items-center"
+                        onClick={() => {
+                          setOpenMobile(false);
+                          router.push(`/chat/${chat.id}`);
+                        }}
                         onMouseEnter={() =>
                           setPinItem((prev) => ({
                             ...prev,
@@ -421,6 +433,7 @@ export default function page() {
                     ))}
                   </ul>
                 )}
+
                 <div
                   className="mt-[8px] mx-2 hover:bg-gray-200 rounded-[10px] flex items-center gap-2 cursor-pointer"
                   onClick={() => setShowHistory(!showHistory)}
@@ -446,6 +459,10 @@ export default function page() {
                       <button
                         key={chat.id}
                         className="h-[42px] mx-[8px] mt-[8px] text-left pl-[12px] hover:bg-gray-200 rounded-[10px] flex justify-between items-center"
+                        onClick={() => {
+                          setOpenMobile(false);
+                          router.push(`/chat/${chat.id}`);
+                        }}
                         onMouseEnter={() =>
                           setOpenItem((prev) => ({
                             ...prev,
@@ -551,15 +568,75 @@ export default function page() {
           </div>
 
           {small ? (
-            <div className="flex justify-center items-center py-[6px]">
+            <div className="flex justify-center items-center py-[6px] relative">
+              {setting && (
+                <div className="p-1 border border-[#d7d7d2] rounded-[15px] absolute bottom-14 left-1 z-[100] bg-white">
+                  <div
+                    className="grid grid-cols-[30px_1fr] gap-2 hover:bg-gray-200 pl-3 w-[200px] py-1 rounded-[10px] cursor-pointer"
+                    onClick={() => {
+                      // Profile Modal Small = True
+                      setSetting(false);
+                      setProfile(true);
+                    }}
+                  >
+                    <div className="flex justify-center items-center">
+                      <img
+                        src={`/assets/avatars/${user?.avatar_url}`}
+                        alt="avatar"
+                        className="w-6 h-6 rounded-[50%]"
+                      />
+                    </div>
+                    <div className="grid grid-rows-2 h-full ">
+                      <div className="text-[16px] flex items-center">
+                        {user?.fullname}
+                      </div>
+                      <div className="text-[14px] text-gray-400 flex items-center">
+                        {`@${user?.username}`}
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="mx-2 text-[#d7d7d2] my-1" />
+                  <div className="text-[16px] pl-3 py-1 hover:bg-gray-200 h-11 rounded-[10px] flex items-center gap-2 cursor-pointer">
+                    <span>
+                      <Settings
+                        strokeWidth="1.6"
+                        className="w-[20px] h-[20px]"
+                      />
+                    </span>
+                    <span>Cài đặt</span>
+                  </div>
+                  <div className="text-[16px] pl-3 py-1 hover:bg-gray-200 h-11 rounded-[10px] flex items-center gap-2 cursor-pointer">
+                    <span>
+                      <Info strokeWidth="1.6" className="w-[20px] h-[20px]" />
+                    </span>
+                    <span>Trợ giúp</span>
+                  </div>
+                  <hr className="mx-2 text-[#d7d7d2] my-1" />
+                  <div
+                    className="text-[16px] pl-3 py-1 hover:bg-gray-200 h-11 rounded-[10px] flex items-center gap-2 cursor-pointer"
+                    onClick={() => {
+                      setSetting(false);
+                      setLogout(true);
+                    }}
+                  >
+                    <span>
+                      <LogOut strokeWidth="1.6" className="w-[20px] h-[20px]" />
+                    </span>
+                    <span>Đăng xuất</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Avatar navbar */}
+
               <div
                 className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center cursor-pointer"
                 onClick={() => {
-                  setProfile(true);
+                  setSetting(!setting);
                 }}
               >
                 <img
-                  src="/assets/avatar.webp"
+                  src={`/assets/${user?.avatar_url}`}
                   alt="avatar"
                   className="w-6 h-6 rounded-[50%]"
                 />
@@ -567,40 +644,99 @@ export default function page() {
             </div>
           ) : (
             <div
-              className="h-10 my-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer"
+              className="h-10 my-[6px] mx-2 hover:bg-gray-200 rounded-[10px] flex cursor-pointer relative"
+              // Toggle small False
               onClick={() => {
-                setProfile(true);
+                setSetting(!setting);
               }}
             >
+              {/* Modal cua Small False */}
+              {setting && (
+                <div className="p-1 border border-[#d7d7d2] rounded-[15px] absolute bottom-14 left-1 z-[100] bg-white">
+                  <div
+                    className="grid grid-cols-[30px_1fr] gap-2 hover:bg-gray-200 pl-3 w-[200px] py-1 rounded-[10px]"
+                    onClick={() => {
+                      setProfile(true);
+                    }}
+                  >
+                    <div className="flex justify-center items-center">
+                      <img
+                        src={`/assets/${user?.avatar_url}`}
+                        alt="avatar"
+                        className="w-6 h-6 rounded-[50%]"
+                      />
+                    </div>
+                    <div className="grid grid-rows-2 h-full ">
+                      <div className="text-[16px] flex items-center">
+                        {user?.fullname}
+                      </div>
+                      <div className="text-[14px] text-gray-400 flex items-center">
+                        {`@${user?.username}`}
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="mx-2 text-[#d7d7d2] my-1" />
+                  <div className="text-[16px] pl-3 py-1 hover:bg-gray-200 h-11 rounded-[10px] flex items-center gap-2">
+                    <span>
+                      <Settings
+                        strokeWidth="1.6"
+                        className="w-[20px] h-[20px]"
+                      />
+                    </span>
+                    <span>Cài đặt</span>
+                  </div>
+                  <div className="text-[16px] pl-3 py-1 hover:bg-gray-200 h-11 rounded-[10px] flex items-center gap-2">
+                    <span>
+                      <Info strokeWidth="1.6" className="w-[20px] h-[20px]" />
+                    </span>
+                    <span>Trợ giúp</span>
+                  </div>
+                  <hr className="mx-2 text-[#d7d7d2] my-1" />
+                  <div
+                    className="text-[16px] pl-3 py-1 hover:bg-gray-200 h-11 rounded-[10px] flex items-center gap-2"
+                    onClick={() => {
+                      setSetting(false);
+                      setLogout(true);
+                    }}
+                  >
+                    <span>
+                      <LogOut strokeWidth="1.6" className="w-[20px] h-[20px]" />
+                    </span>
+                    <span>Đăng xuất</span>
+                  </div>
+                </div>
+              )}
               <div className="w-[42px] flex justify-center items-center">
                 <img
-                  src="/assets/avatar.webp"
+                  src={`/assets/${user?.avatar_url}`}
                   alt="avatar"
                   className="w-6 h-6 rounded-[50%]"
                 />
               </div>
               <div className="flex items-center text-[14px] select-none">
-                Trịnh Như Nhất
+                {user?.fullname}
               </div>
             </div>
           )}
-        </div>
 
-        <div className="bg-transparent grid grid-rows-[54px_1fr] min-w-0">
-          <div className="border-b border-[#d7d7d2] grid grid-cols-[58px_1fr_58px] md:grid-cols-[1fr_58px] py-[6px] min-w-0">
-            <div className="ml-4 md:hidden flex justify-center items-center">
+          {/* Header Content */}
+        </div>
+        <div className="bg-transparent grid grid-rows-[54px_1fr] min-w-0 overflow-hidden h-screen">
+          <div className="grid grid-cols-[58px_1fr_58px] lg:grid-cols-[1fr_58px] py-[6px] min-w-0">
+            <div className="ml-4 lg:hidden flex justify-center items-center">
               <div
                 className="w-10 h-10 rounded-[10px] hover:bg-gray-200 flex justify-center items-center"
                 onClick={() => {
                   setOpenMobile(true);
+                  setSmall(false);
                 }}
               >
                 <PanelRight strokeWidth="1.6" className="w-[18px] h-[18px]" />
               </div>
             </div>
-            <div className="pl-1 md:pl-4 text-[15px] flex items-center">
+            <div className="pl-1 lg:pl-4 text-[15px] flex items-center">
               <span className="h-10 px-2 flex justify-center items-center rounded-[10px] hover:bg-gray-200 select-none">
-                Hỏi về React hooks
+                {/* Hỏi về React hooks */}
               </span>
             </div>
             <div className="mr-4 text-[15px] flex justify-center items-center">
@@ -609,9 +745,7 @@ export default function page() {
               </div>
             </div>
           </div>
-          <div className="flex justify-center items-center">
-            Nguyễn Diệu Lyng
-          </div>
+          <div className="overflow-hidden min-h-0 h-full">{children}</div>
         </div>
       </div>
     </div>

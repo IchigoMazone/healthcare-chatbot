@@ -3,6 +3,7 @@
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { LoginForm } from "../types/loginForm";
+import { useAuthStore } from "@/src/store/auth.store";
 import { useRouter } from "next/navigation";
 
 export default function page() {
@@ -12,6 +13,8 @@ export default function page() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const handleForgot = () => {
     router.push("/forgot-password");
@@ -19,6 +22,26 @@ export default function page() {
 
   const handleRegister = () => {
     router.push("/register");
+  };
+
+  const handleLogin = async (username: string, password: string) => {
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+        credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data);
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      setAuth(data.data.userId, data.data.accessToken);
+      router.push("/chat");
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -43,6 +66,10 @@ export default function page() {
               type="text"
               placeholder="Nhập tài khoản"
               className="border-[2px] border-white/5 rounded-[5px] px-12 py-[10px] bg-white/30 w-[100%] placeholder-white/85 text-white/85"
+              value={information.username}
+              onChange={(e) =>
+                setInformation({ ...information, username: e.target.value })
+              }
             />
             <User className="text-white/85 absolute top-3 left-3" />
           </div>
@@ -52,6 +79,10 @@ export default function page() {
               type={showPassword ? "text" : "password"}
               placeholder="Nhập mật khẩu"
               className="border-[2px] border-white/5 rounded-[5px] px-12 py-[10px] bg-white/30 w-[100%] placeholder-white/85 text-white/85"
+              value={information.password}
+              onChange={(e) =>
+                setInformation({ ...information, password: e.target.value })
+              }
             />
             <Lock className="text-white/85 absolute top-3 left-3 " />
             {showPassword ? (
@@ -74,23 +105,27 @@ export default function page() {
             Quên mật khẩu?
           </p>
 
-          {/* <p className="text-center text-[14px] text-white/85 mb-5">
-            Tài khoản hoặc mật khẩu không chính xác.
-          </p> */}
-          <p className="text-center text-[14px] text-white/85 mb-5"></p>
+          <p className="text-center text-[14px] text-white/85 mb-5">
+            {error ? error : ""}
+          </p>
 
-          <button className="text-white/85 flex justify-center items-center p-2 border-[2px] border-white/5 rounded-[5px] bg-white/30 cursor-pointer">
+          <button
+            className="text-white/85 flex justify-center items-center p-2 border-[2px] border-white/5 rounded-[5px] bg-white/30 cursor-pointer"
+            onClick={() =>
+              handleLogin(information.username, information.password)
+            }
+          >
             Đăng nhập
           </button>
 
           <p className="flex justify-center items-center text-[14px] mt-5 text-white/85">
             Chưa có tài khoản?.{" "}
-            <p
+            <span
               className="cursor-pointer hover:text-white"
               onClick={handleRegister}
             >
               Tạo tài khoản
-            </p>
+            </span>
           </p>
         </div>
       </div>
